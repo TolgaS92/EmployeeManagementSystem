@@ -58,11 +58,17 @@ const viewEmployees = () => {
 };
 
 const viewEmployeesByDepartment = () => {
+    connection.query('SELECT * FROM departments', (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        employeeManagement();
+    })
+
     
 }
 
 const viewEmployeesByManager = () => {
-    
+
 }
 
 const addEmployee = () => {

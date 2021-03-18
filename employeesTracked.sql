@@ -12,7 +12,7 @@ CREATE TABLE departments(
 );
 
 CREATE TABLE roles(
-	id INT NOT NULL AUTO_INCREMENT,
+	  id INT NOT NULL AUTO_INCREMENT,
     
     title VARCHAR(30) NOT NULL,
     
@@ -24,7 +24,7 @@ CREATE TABLE roles(
 );
 
 CREATE TABLE employee (
-	id INT NOT NULL AUTO_INCREMENT,
+	  id INT NOT NULL AUTO_INCREMENT,
     
     first_name VARCHAR(30) NOT NULL,
     
@@ -37,6 +37,8 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 );
 
+INSERT INTO departments (name)
+VALUES ('Human Resources'), ('Sales Department'), ('IT Department'), ('Finance Department');
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Tolga', 'Secme', 7, 1);
