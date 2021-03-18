@@ -10,7 +10,7 @@ const connection = mysql.createConnection({
 });
 
 
-const start = () => {
+const employeeManagement = () => {
     inquirer
     .prompt ([
         {
@@ -49,8 +49,13 @@ const start = () => {
 }
 
 const viewEmployees = () => {
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        employeeManagement();
+    })
 
-}
+};
 
 const viewEmployeesByDepartment = () => {
     
@@ -80,5 +85,5 @@ const updateEmployeeManager = () => {
 connection.connect((err) => {
     if(err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
-    start();
+    employeeManagement();
 });
