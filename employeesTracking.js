@@ -17,7 +17,7 @@ const employeeManagement = () => {
             type: 'list',
             name: 'choices',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'View All Department', 'View All Roles', 'Add Department', 'Add Role', 'Add Employee', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
+            choices: ['View All Employees', 'View All Department', 'View All Roles', 'Add Department', 'Add Role', 'Add Employee', 'Remove Department', 'Remove Role', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
         }
     ]).then((answer) => {
         switch (answer.choices) {
@@ -39,6 +39,12 @@ const employeeManagement = () => {
             case "Add Employee":
                 addEmployee();
             break;
+            case "Remove Department":
+                removeDepartment();
+            break;
+            case "Remove Role":
+                removeRole();
+            break;
             case "Remove Employee":
                 removeEmployee();
             break;
@@ -53,7 +59,7 @@ const employeeManagement = () => {
         }
     })
 }
-
+//Build a command-line application that at a minimum allows the user to:
 const viewEmployees = () => {
     connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
@@ -183,38 +189,6 @@ const addEmployee = () => {
     });
 };
 
-const removeEmployee = () => {
-    connection.query('SELECT * FROM employee', (err, results) => {
-        if (err) throw err;
-        inquirer
-            .prompt([
-                {
-                    name: 'choice',
-                    type: 'rawlist',
-                    choices() {
-                        const choiceArray = [];
-                        results.forEach(({ first_name }) => {
-                            choiceArray.push(first_name);
-                        });
-                        return choiceArray;
-                    },
-                    message: 'Which employee you would like to delete?',
-                },
-            ]).then((answer) => {
-                connection.query(
-                    'DELETE FROM employee WHERE ?',
-                    {
-                        first_name: answer.choice,
-                    },
-                    (err, res) => {
-                        if(err) throw err;
-                        console.log(`${res.affectedRows} employee information is deleted!`);
-                        employeeManagement();
-                    })
-            });
-        });
-};
-
 const updateEmployeeRole = () => {
     connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
@@ -269,6 +243,9 @@ const updateEmployeeRole = () => {
     });
 };
 
+
+// Bonus points if you're able to:
+
 const updateEmployeeManagerId = () => {
     connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
@@ -322,6 +299,103 @@ const updateEmployeeManagerId = () => {
         });
     });
 };
+
+const removeDepartment = () => {
+    connection.query('SELECT * FROM departments', (err, results) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'choice',
+                    type: 'rawlist',
+                    choices() {
+                        const choiceArray = [];
+                        results.forEach(({ name }) => {
+                            choiceArray.push(name);
+                        });
+                        return choiceArray;
+                    },
+                    message: 'Which department you would like to delete?',
+                },
+            ]).then((answer) => {
+                connection.query(
+                    'DELETE FROM departments WHERE ?',
+                    {
+                        name: answer.choice,
+                    },
+                    (err, res) => {
+                        if(err) throw err;
+                        console.log(`${res.affectedRows} department is deleted!`);
+                        employeeManagement();
+                    })
+            });
+        });
+};
+
+const removeRole = () => {
+    connection.query('SELECT * FROM roles', (err, results) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'choice',
+                    type: 'rawlist',
+                    choices() {
+                        const choiceArray = [];
+                        results.forEach(({ title }) => {
+                            choiceArray.push(title);
+                        });
+                        return choiceArray;
+                    },
+                    message: 'Which role you would like to delete?',
+                },
+            ]).then((answer) => {
+                connection.query(
+                    'DELETE FROM roles WHERE ?',
+                    {
+                        title: answer.choice,
+                    },
+                    (err, res) => {
+                        if(err) throw err;
+                        console.log(`${res.affectedRows} role is deleted!`);
+                        employeeManagement();
+                    })
+            });
+        });
+};
+
+const removeEmployee = () => {
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'choice',
+                    type: 'rawlist',
+                    choices() {
+                        const choiceArray = [];
+                        results.forEach(({ first_name }) => {
+                            choiceArray.push(first_name);
+                        });
+                        return choiceArray;
+                    },
+                    message: 'Which employee you would like to delete?',
+                },
+            ]).then((answer) => {
+                connection.query(
+                    'DELETE FROM employee WHERE ?',
+                    {
+                        first_name: answer.choice,
+                    },
+                    (err, res) => {
+                        if(err) throw err;
+                        console.log(`${res.affectedRows} employee information is deleted!`);
+                        employeeManagement();
+                    })
+            });
+        });
+};
+
 
 
 connection.connect((err) => {
