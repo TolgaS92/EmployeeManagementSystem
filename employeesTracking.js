@@ -17,7 +17,7 @@ const employeeManagement = () => {
             type: 'list',
             name: 'choices',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'View All Department', 'View All Employees By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manager', 'EXIT'],
+            choices: ['View All Employees', 'View All Department', 'View All Employees By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
         }
     ]).then((answer) => {
         switch (answer.choices) {
@@ -36,11 +36,11 @@ const employeeManagement = () => {
             case "Remove Employee":
                 removeEmployee();
             break;
-            case "Update Employee Role":
+            case "Update Employee Role ID":
                 updateEmployeeRole();
             break;
-            case "Update Employee Manager":
-                updateEmployeeManager();
+            case "Update Employee Manager ID":
+                updateEmployeeManagerId();
             break;
             case "EXIT":
                 connection.end();            
@@ -171,9 +171,59 @@ const updateEmployeeRole = () => {
     });
 };
 
-const updateEmployeeManager = () => {
-    
-}
+const updateEmployeeManagerId = () => {
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
+        inquirer
+        .prompt([
+            {
+                name: 'choice',
+                type: 'rawlist',
+                choices() {
+                    const choiceArray = [];
+                    results.forEach(({ first_name }) =>{
+                        choiceArray.push(first_name);
+                    });
+                    return choiceArray;
+                },
+                message: 'Which employee manager ID would you like to update?',
+            },
+            {
+                name: 'newRoleId',
+                type: 'input',
+                message: 'What is the manager ID would you like to change to?',
+            },
+        ]).then((answer) => {
+            let givenID;
+            results.forEach((manager_id) => {
+                if(manager_id.first_name === answer.choice) {
+                    givenID = manager_id;
+                }
+            });
+            if (parseInt(answer.newRoleId)) {
+                connection.query(
+                    'UPDATE employee SET ? WHERE ?',
+                    [
+                        {
+                            manager_id: answer.newRoleId,
+                        },
+                        {
+                            id: givenID.id,
+                        },
+                    ],
+                    (error) => {
+                        if(error) throw err;
+                        console.log('New Manager ID Updated succesfully!');
+                        employeeManagement();
+                    }
+                );
+            } else {
+                console.log("It didn't updated!")
+                employeeManagement();
+            }
+        });
+    });
+};
 
 
 connection.connect((err) => {
