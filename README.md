@@ -6,10 +6,11 @@
 2. [Description](#Description)
 3. [Installation](#Installation)
 4. [Usage](#Usage)
-5. [Credits](#Credits)
-6. [Contributing](#Contributing)
-7. [Questions](#Questions)
-8. [Video](#Video)
+5. [License](#License)
+6. [Credits](#Credits)
+7. [Contributing](#Contributing)
+8. [Questions](#Questions)
+9. [Video](#Video)
 
 ## Technologies-Used
 
@@ -18,6 +19,7 @@
 3. Node packages
    - Inquirer
    - MySQL
+   - console.table
 4. MySQL Database
 
 ## Description
@@ -33,6 +35,10 @@
 - User needs to run this application with the terminal, and answer the following questions, you will be able to check employees, departments, add employee, remove employee and so on.
 
 ![Terminal](./Assets/Terminal.png)
+
+## License
+
+- [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Credits
 
