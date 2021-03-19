@@ -114,8 +114,36 @@ const addEmployee = () => {
 };
 
 const removeEmployee = () => {
-    
-}
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'choice',
+                    type: 'rawlist',
+                    choices() {
+                        const choiceArray = [];
+                        results.forEach(({ first_name }) => {
+                            choiceArray.push(first_name);
+                        });
+                        return choiceArray;
+                    },
+                    message: 'Which employee you would like to delete?',
+                },
+            ]).then((answer) => {
+                connection.query(
+                    'DELETE FROM employee WHERE ?',
+                    {
+                        first_name: answer.choice,
+                    },
+                    (err, res) => {
+                        if(err) throw err;
+                        console.log(`${res.affectedRows} employee information is deleted!`);
+                        employeeManagement();
+                    })
+            });
+        });
+};
 
 const updateEmployeeRole = () => {
     connection.query('SELECT * FROM employee', (err, results) => {
