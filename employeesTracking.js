@@ -118,8 +118,58 @@ const removeEmployee = () => {
 }
 
 const updateEmployeeRole = () => {
-    
-}
+    connection.query('SELECT * FROM employee', (err, results) => {
+        if (err) throw err;
+        inquirer
+        .prompt([
+            {
+                name: 'choice',
+                type: 'rawlist',
+                choices() {
+                    const choiceArray = [];
+                    results.forEach(({ first_name }) =>{
+                        choiceArray.push(first_name);
+                    });
+                    return choiceArray;
+                },
+                message: 'Which employee role ID would you like to update?',
+            },
+            {
+                name: 'newRoleId',
+                type: 'input',
+                message: 'What is the role ID would you like to change to?',
+            },
+        ]).then((answer) => {
+            let givenID;
+            results.forEach((role_id) => {
+                if(role_id.first_name === answer.choice) {
+                    givenID = role_id;
+                }
+            });
+            if (parseInt(answer.newRoleId)) {
+                connection.query(
+                    'UPDATE employee SET ? WHERE ?',
+                    [
+                        {
+                            role_id: answer.newRoleId,
+                        },
+                        {
+                            id: givenID.id,
+                        },
+                    ],
+                    (error) => {
+                        if(error) throw err;
+                        console.log('New Role ID Updated succesfully!');
+                        employeeManagement();
+                    }
+                );
+            } else {
+                console.log("It didn't updated!")
+                employeeManagement();
+            }
+        });
+    });
+};
 
 const updateEmployeeManager = () => {
     
