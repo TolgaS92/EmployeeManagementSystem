@@ -17,7 +17,7 @@ const employeeManagement = () => {
             type: 'list',
             name: 'choices',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'View All Department', 'View All Employees By Manager', 'Add Employee', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
+            choices: ['View All Employees', 'View All Department', 'View All Roles', 'Add Department', 'Add Role', 'Add Employee', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
         }
     ]).then((answer) => {
         switch (answer.choices) {
@@ -27,8 +27,14 @@ const employeeManagement = () => {
             case "View All Department":
                 viewDepartments();
             break;
-            case "View All Employees By Manager":
-                viewEmployeesByManager();
+            case "View All Roles":
+                viewRoles();
+            break;
+            case "Add Department":
+                addDepartment();
+            break;
+            case "Add Role":
+                addRole();
             break;
             case "Add Employee":
                 addEmployee();
@@ -64,12 +70,76 @@ const viewDepartments = () => {
     })
 };
 
-const viewEmployeesByManager = () => {
+const viewRoles = () => {
     connection.query('SELECT * FROM roles', (err, results) => {
         if (err) throw err;
         console.table(results);
         employeeManagement();
     })
+};
+
+const addDepartment = () => {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'departmentName',
+            message: 'What is the name of department you would like to add ?'
+        },
+    ]).then((answers) => {
+        connection.query(
+            'INSERT INTO departments SET ?',
+            {
+                name: answers.departmentName,
+            },
+            (err) => {
+                if(err) throw err;
+                console.log("New Department added to Department's list!");
+                employeeManagement();
+            }
+            );     
+    });
+};
+
+const addRole = () => {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the title you would like to add ?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary amount you would like to add ?',
+            validate(value) {
+                if (isNaN(value) === false) {
+                  return true;
+                }
+                return false;
+            },
+        },
+        {
+            type: 'input',
+            name: 'departmentId',
+            message: 'What is the department ID for this role ?'
+        },
+    ]).then((answers) => {
+        connection.query(
+            'INSERT INTO roles SET ?',
+            {
+                title: answers.title,
+                salary: answers.salary || 0,
+                department_id: answers.departmentId,
+            },
+            (err) => {
+                if(err) throw err;
+                console.log("New Role added to Role's list!");
+                employeeManagement();
+            }
+            );     
+    });
 };
 
 const addEmployee = () => {
