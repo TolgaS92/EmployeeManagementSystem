@@ -18,7 +18,7 @@ const employeeManagement = () => {
             type: 'list',
             name: 'choices',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'View All Department', 'View All Roles', 'Add Department', 'Add Role', 'Add Employee', 'Remove Department', 'Remove Role', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'EXIT'],
+            choices: ['View All Employees', 'View All Department', 'View All Roles', 'Add Department', 'Add Role', 'Add Employee', 'Remove Department', 'Remove Role', 'Remove Employee', 'Update Employee Role ID', 'Update Employee Manager ID', 'View the total utilized budget of a department', 'EXIT'],
         }
     ]).then((answer) => {
         switch (answer.choices) {
@@ -55,6 +55,9 @@ const employeeManagement = () => {
             case "Update Employee Manager ID":
                 updateEmployeeManagerId();
             break;
+            case "View the total utilized budget of a department":
+                viewBudgetDepartment();
+                break;
             case "EXIT":
                 connection.end();            
         }
@@ -397,7 +400,39 @@ const removeEmployee = () => {
         });
 };
 
-
+const viewBudgetDepartment = () => {
+    connection.query('SELECT * FROM roles', (err, results) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'choice',
+                    type: 'rawlist',
+                    choices() {
+                        const choices = [];
+                        results.forEach(({ title })=> {
+                            choices.push(title);
+                        });
+                        return choices;
+                    },
+                    message: "Which Role's salary would you ike to see?",
+                },
+            ]).then((answer) => {
+                connection.query(
+                    'SELECT * FROM roles',
+                    {
+                        salary: answer.choice,
+                    },
+                    (err, res) => {
+                        if(err) throw err;
+                        console.table(res);
+                        employeeManagement();   
+                    }
+                )
+            })
+        }
+    )
+}
 
 connection.connect((err) => {
     if(err) throw err;
