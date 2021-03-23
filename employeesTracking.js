@@ -13,8 +13,6 @@ const connection = mysql.createConnection({
 
 
 const employeeManagement = () => {
-    const logoText = logo({ name: "Employe Management Systems"}).render();
-    console.log(logoText);
     inquirer
     .prompt ([
         {
@@ -440,5 +438,7 @@ const viewBudgetDepartment = () => {
 connection.connect((err) => {
     if(err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
+    const logoText = logo({ name: "Employe Management Systems"}).render();
+    console.log(logoText);
     employeeManagement();
 });
