@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const logo = require('asciiart-logo');
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -12,6 +13,8 @@ const connection = mysql.createConnection({
 
 
 const employeeManagement = () => {
+    const logoText = logo({ name: "Employe Management Systems"}).render();
+    console.log(logoText);
     inquirer
     .prompt ([
         {
